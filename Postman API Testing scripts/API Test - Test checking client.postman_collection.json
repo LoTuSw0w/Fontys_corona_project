@@ -1,0 +1,241 @@
+{
+	"info": {
+		"_postman_id": "7b1a8d02-8978-48a5-b9c7-af4ec08eea1d",
+		"name": "API Test - Test checking client",
+		"description": "APIs collection for the test-checking client",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Checking In using test code - personal not infected with Corona - no check in",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:2000/checkout\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"test_link_code\": \"a1230225c6f03acfbb18cfe00a9f3e\"})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json().message;\r",
+							"    console.log(returnedData);\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check returned message\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"you are clean of Corona!\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"test_link_code\":\"a1230225c6f03acfbb18cfe00a9f3e\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2000/checkTest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2000",
+					"path": [
+						"checkTest"
+					]
+				},
+				"description": "the person is clean of corona and the test hasn't been used to check in"
+			},
+			"response": []
+		},
+		{
+			"name": "Checking In using test code - personal not infected with Corona - checked in",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:2000/checkTest\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"test_link_code\": \"a1230225c6f03acfbb18cfe00a9f3e\"})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json().message;\r",
+							"    console.log(returnedData);\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check returned message\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"don't be cheeky, someone has already checked in with this code!\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"test_link_code\":\"a1230225c6f03acfbb18cfe00a9f3e\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2000/checkTest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2000",
+					"path": [
+						"checkTest"
+					]
+				},
+				"description": "the person is clean of corona but the test has been used to check in. Therefore, the access should be denied to this person!\r\n\r\nThis is the same even for the scenario when a person has corona and the code has been used for checking in!"
+			},
+			"response": []
+		},
+		{
+			"name": "Checking In using test code - personal infected with Corona - no check in",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:2000/checkout\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"test_link_code\": \"04318203406ef5c25c7dd88e875f3b\"})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json().message;\r",
+							"    console.log(returnedData);\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check returned message\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"detain this personel immediately!\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"test_link_code\":\"04318203406ef5c25c7dd88e875f3b\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2000/checkTest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2000",
+					"path": [
+						"checkTest"
+					]
+				},
+				"description": "the person has corona and the test hasn't been used to check in"
+			},
+			"response": []
+		}
+	]
+}

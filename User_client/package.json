@@ -1,0 +1,37 @@
+{
+  "name": "fontys_corona_api",
+  "version": "1.0.0",
+  "description": "my graduation project for Fontys",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mysql",
+    "restapi",
+    "speakeasy",
+    "qrcode",
+    "jsonwebtoken",
+    "password-validator",
+    "nodemon"
+  ],
+  "author": "DungLuong",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.6",
+    "password-validator": "^5.1.1",
+    "qrcode": "^1.4.4",
+    "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}

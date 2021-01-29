@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "19fa5b9e-b03e-4e87-a252-22abfcf52384",
+		"name": "API Test - Testing machine client",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Insert new test - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check returned message to make sure it doesn't return a blank value\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.not.eql(\"\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check returned message to make sure it doesn't return an undefined value\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.not.eql(undefined);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"device_number\": 1,\r\n    \"test_area_id\": 1,\r\n    \"test_result\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/testMachine/insertNewResult",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"testMachine",
+						"insertNewResult"
+					]
+				},
+				"description": "Success case when inserting a new test to the database. The test machine must be connected to the server (For this case is testing machine number 1)"
+			},
+			"response": []
+		},
+		{
+			"name": "Insert new test - test machine not connected",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check returned message\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"The machine needs to connect to the server!\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 403 status\", () => {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"device_number\": 1,\r\n    \"test_area_id\": 1,\r\n    \"test_result\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/testMachine/insertNewResult",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"testMachine",
+						"insertNewResult"
+					]
+				},
+				"description": "If a testing machine is not connected, the server is expected to return a warning message (need to disconnect the testing machine first, in this case is machine #1)"
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,1000 @@
+{
+	"info": {
+		"_postman_id": "1932943e-40d1-419c-bfd5-67e61a69e2e9",
+		"name": "API Test - User Portal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sign Up - success case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"user_name matches the one in the body\", () => {\r",
+							"    const responseJSON = pm.response.json();\r",
+							"    pm.expect(responseJSON.user_name).to.eql(\"user62\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"user61\",\r\n    \"password\": \"ThisIsthePassword\",\r\n    \"email\": \"user61@gmail.com\",\r\n    \"first_name\": \"The\",\r\n    \"last_name\": \"User\"\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"signup"
+					]
+				},
+				"description": "This is a POST request that insert a new user into the database\r\nWhen the operation is complete, the API is expected to return status 200.\r\n\r\nWhen testing, be sure to change the body to prevent matching! "
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up - check duplicate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check duplicate entry\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"ER_DUP_ENTRY: Duplicate entry 'user6' for key 'User.user_name_UNIQUE'\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 500 status\", () => {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"user6\",\r\n    \"password\": \"ThisIsthePassword\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"first_name\": \"The\",\r\n    \"last_name\": \"User\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"signup"
+					]
+				},
+				"description": "Check if the API can spot the duplicate user_name"
+			},
+			"response": []
+		},
+		{
+			"name": "Sign Up - check password (min length, uppercase, lowercase, forbidden)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Password does not meet minimum length of 8 characters, \", () => {\r",
+							"  pm.expect(responseJson.message[0]).to.eql(\"Password does not meet minimum length (8 characters)\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Password needs to have at least one uppercase character, \", () => {\r",
+							"  pm.expect(responseJson.message[1]).to.eql(\"Password needs to have at least one uppercase character\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Password needs to have at least one lowercase character, \", () => {\r",
+							"  pm.expect(responseJson.message[2]).to.eql(\"Password needs to have at least one lowercase character\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"This password phrase is forbidden: 123456\", () => {\r",
+							"  pm.expect(responseJson.message[3]).to.eql(\"This password phrase is forbidden: 123456\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 401 status\", () => {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"user6\",\r\n    \"password\": \"123456\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"first_name\": \"The\",\r\n    \"last_name\": \"User\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"signup"
+					]
+				},
+				"description": "Check if the API can enforce the password requirements"
+			},
+			"response": []
+		},
+		{
+			"name": "Sign Up - check blank request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check blank content\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"Please enter something for the content!\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 400 status\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"user12\",\r\n    \"password\": \"Trinhdocao1996\",\r\n    \"email\": \"\",\r\n    \"first_name\": \"The\",\r\n    \"last_name\": \"User\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log In - check if the API returns a valid token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if the token is not null\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.not.eql(\"\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"aNewUser\",\r\n    \"password\": \"ThePassWord\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"login"
+					]
+				},
+				"description": "check if the token returned is not null, and make sure the API returns 200 as status"
+			},
+			"response": []
+		},
+		{
+			"name": "Log in - check if the API knows that the username is wrong",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"API returns a 404 status\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if the API knows that the username is wrong\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"No user name found!.\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"aNewUser1111\",\r\n    \"password\": \"ThePassWord1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"login"
+					]
+				},
+				"description": "the API should return 404 and a message"
+			},
+			"response": []
+		},
+		{
+			"name": "Log In - check if the API knows that the password is wrong",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"API returns a 400 status\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if the API knows that the password is wrong\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.message).to.eql(\"wrong password!\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"aNewUser\",\r\n    \"password\": \"ThePassWord1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"login"
+					]
+				},
+				"description": "The API should return status 400 and a message"
+			},
+			"response": []
+		},
+		{
+			"name": "Returning User Data - test returning values",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:3000/user/login\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"user_name\": \"aNewUser\",\"password\": \"ThePassWord\"})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json();\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.globals.set(\"Authorization\", returnedData);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json().data;\r",
+							"\r",
+							"pm.test(\"Check if the API returns the correct id\", () => {\r",
+							"  const id_value = responseJson.user_id;\r",
+							"  pm.expect(id_value).to.eql(33);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if the API returns the correct user_name\", () => {\r",
+							"  const user_name_value = responseJson.user_name;\r",
+							"  pm.expect(user_name_value).to.eql(\"aNewUser\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Authorization}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7InVzZXIiOiJhTmV3VXNlciIsInBhc3N3b3JkIjoiVGhlUGFzc1dvcmQifSwiaWF0IjoxNjEwOTg0NzM5LCJleHAiOjE2MTEwNzExMzl9.pShWe3z8zXdwBiXfOUteDDvDOVGI_foWbZmDx0-D0le",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/user/aNewUser",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"aNewUser"
+					]
+				},
+				"description": "check if the apis return the right value by inspecting the user_id and user_name (using correct token!)"
+			},
+			"response": []
+		},
+		{
+			"name": "Returning User Data - check if API can return other people's information",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Check if the API returns the correct message\", () => {\r",
+							"  pm.expect(responseJson.message).to.eql(\"You are not allowed to see others' profile!\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 451 status\", () => {\r",
+							"    pm.response.to.have.status(451);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:3000/user/login\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"user_name\": \"aNewUser\",\"password\": \"ThePassWord\"})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json();\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.globals.set(\"Authorization\", returnedData);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Authorization}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7InVzZXIiOiJhTmV3VXNlciIsInBhc3N3b3JkIjoiVGhlUGFzc1dvcmQifSwiaWF0IjoxNjEwOTg0NzM5LCJleHAiOjE2MTEwNzExMzl9.pShWe3z8zXdwBiXfOUteDDvDOVGI_foWbZmDx0-D0le"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/user/user61",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"user61"
+					]
+				},
+				"description": "check if the apis can prevent a logged in user to see others' profiles"
+			},
+			"response": []
+		},
+		{
+			"name": "Link test to user account - valid test linking code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:5000/testMachine/insertNewResult\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"device_number\": 1,\"test_area_id\": 1, \"test_result\": 0})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json().message;\r",
+							"    console.log(returnedData);\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.globals.set(\"Test_linking_code\", returnedData);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json().message.message;\r",
+							"\r",
+							"pm.test(\"Check if the API returns the correct message\", () => {\r",
+							"  pm.expect(responseJson).to.eql('successfully linked test result and user - aNewUser');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\":\"aNewUser\",\r\n    \"test_linking_code\": \"{{Test_linking_code}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/linkTest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"linkTest"
+					]
+				},
+				"description": "Test if the API can perform the operation if the user has the correct code"
+			},
+			"response": []
+		},
+		{
+			"name": "Link test to user account - user gives an invalid test linking code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:5000/testMachine/insertNewResult\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"device_number\": 1,\"test_area_id\": 1, \"test_result\": 0})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json().message;\r",
+							"    console.log(returnedData);\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.globals.set(\"Test_linking_code\", returnedData);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json().message;\r",
+							"console.log(responseJson);\r",
+							"\r",
+							"pm.test(\"Check if the API returns the correct error message\", () => {\r",
+							"  pm.expect(responseJson).to.eql('Make sure that the either the test linking code or the user is correct!');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 404 status\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\":\"aNewUser\",\r\n    \"test_linking_code\": \"randomTestCode\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/linkTest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"linkTest"
+					]
+				},
+				"description": "Test if the API can prevent the user from giving a false test linking code"
+			},
+			"response": []
+		},
+		{
+			"name": "Link test to user account - invalid username case",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const options = {\r",
+							"    url: \"http://localhost:5000/testMachine/insertNewResult\",\r",
+							"    method: 'POST',\r",
+							"    header: { 'content-type': 'application/json' },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\"device_number\": 1,\"test_area_id\": 1, \"test_result\": 0})\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function (err, res) {\r",
+							"    var returnedData = res.json().message;\r",
+							"    console.log(returnedData);\r",
+							"    if (err) {\r",
+							"        console.log(err);\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.globals.set(\"Test_linking_code\", returnedData);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json().message;\r",
+							"console.log(responseJson);\r",
+							"\r",
+							"pm.test(\"Check if the API returns the correct error message\", () => {\r",
+							"  pm.expect(responseJson).to.eql('not found user with user name ______');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 404 status\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\":\"______\",\r\n    \"test_linking_code\": \"123456\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/linkTest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"linkTest"
+					]
+				},
+				"description": "Test if the API can spot an invalid username"
+			},
+			"response": []
+		},
+		{
+			"name": "Generate two factor authentication hex ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json().hex_value;\r",
+							"console.log(responseJson);\r",
+							"\r",
+							"pm.test(\"The API is expected to not return a null message\", () => {\r",
+							"  pm.expect(responseJson).to.not.eql('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"aNewUser\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/twofactor/generate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"twofactor",
+						"generate"
+					]
+				},
+				"description": "Check the API that returns two factor authentication hex value for a particular username"
+			},
+			"response": []
+		},
+		{
+			"name": "Generate two factor authentication hex  - wrong  username case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json().message;\r",
+							"console.log(responseJson);\r",
+							"\r",
+							"pm.test(\"The API is expected to return a warning on the username\", () => {\r",
+							"  pm.expect(responseJson).to.eql('no user name matched!');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 404 status\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"____\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/twofactor/generate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"twofactor",
+						"generate"
+					]
+				},
+				"description": "Check the API can spot a false username"
+			},
+			"response": []
+		},
+		{
+			"name": "Update user - success case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const body = {\r",
+							"    id: \"65\",\r",
+							"    user_name: \"EDITED_USER\",\r",
+							"    email: \"edited-User@gmail.com\",\r",
+							"    first_name: \"Dung\",\r",
+							"    last_name: \"Luong\"\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Check returned result - name\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson).to.eql(body);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API returns a 200 status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"EDITED_USER\",\r\n    \"email\": \"edited-User@gmail.com\",\r\n    \"first_name\": \"Dung\",\r\n    \"last_name\": \"Luong\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/65",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"65"
+					]
+				},
+				"description": "update user details "
+			},
+			"response": []
+		}
+	]
+}
